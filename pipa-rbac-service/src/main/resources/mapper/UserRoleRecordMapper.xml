@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.UserRoleRecordMapper">
+    <resultMap id="tUserRoleRecordRm" type="cn.addenda.piparbac.po.UserRoleRecord">
+        <id property="sqc" column="sqc"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, user_sqc, role_sqc, type
+    </sql>
+
+    <insert id="insert">
+        insert into t_user_role_record
+        set sqc      = #{sqc,jdbcType=BIGINT},
+            user_sqc = #{userSqc,jdbcType=BIGINT},
+            role_sqc = #{roleSqc,jdbcType=BIGINT},
+            type     = #{type,jdbcType=VARCHAR}
+    </insert>
+
+    <select id="queryUserRoleRecordByUserSqc" resultMap="tUserRoleRecordRm">
+        select
+        <include refid="allFields"/>
+        from t_user_role_record
+        where user_sqc = #{userSqc,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByUserSqc">
+        delete
+        from t_user_role_record
+        where user_sqc = #{userSqc,jdbcType=BIGINT}
+    </delete>
+
+    <select id="queryLoginRole" resultMap="cn.addenda.piparbac.mapper.UserRoleMapper.tUserRoleRm">
+        select t_user_role.sqc           as sqc,
+               t_user_role.user_sqc      as user_sqc,
+               t_user_role.role_sqc      as role_sqc,
+               t_user_role.access_type   as access_type,
+               t_user_role.rule_sqc_list as rule_sqc_list
+        from t_user_role_record
+                 join t_user_role on t_user_role_record.role_sqc = t_user_role.role_sqc and
+                                     t_user_role_record.user_sqc = t_user_role.user_sqc
+        where t_user_role_record.user_sqc = #{userSqc,jdbcType=BIGINT}
+    </select>
+</mapper>

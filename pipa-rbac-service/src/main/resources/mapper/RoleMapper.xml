@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.RoleMapper">
+    <resultMap id="tRoleRm" type="cn.addenda.piparbac.po.Role">
+        <id property="sqc" column="sqc"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, role_code, role_name, status
+    </sql>
+
+    <insert id="insert">
+        insert into t_role
+        set sqc       = #{sqc,jdbcType=BIGINT},
+            role_code = #{roleCode,jdbcType=VARCHAR},
+            role_name = #{roleName,jdbcType=VARCHAR},
+            status    = #{status,jdbcType=VARCHAR}
+    </insert>
+
+    <select id="roleCodeExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_role
+        WHERE role_code = #{roleCode,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="sqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_role
+        WHERE sqc = #{sqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <delete id="deleteBySqc">
+        delete
+        from t_role
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateNonNullFieldsBySqc">
+        update t_role
+        <set>
+            <if test="roleCode != null">
+                role_code = #{roleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </update>
+
+    <select id="queryByRoleCode" resultMap="tRoleRm">
+        select
+        <include refid="allFields"/>
+        from t_role
+        where role_code = #{roleCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryByNonNullFields" resultMap="tRoleRm">
+        select
+        <include refid="allFields"/>
+        from t_role
+        <where>
+            <if test="sqc != null">
+                and sqc = #{sqc,jdbcType=BIGINT}
+            </if>
+            <if test="roleCode != null">
+                and role_code = #{roleCode,jdbcType=VARCHAR}
+            </if>
+            <if test="roleName != null">
+                and role_name like concat('%', #{roleName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

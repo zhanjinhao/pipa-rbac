@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.UserRoleMapper">
+    <resultMap id="tUserRoleRm" type="cn.addenda.piparbac.po.UserRole">
+        <id property="sqc" column="sqc"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, user_sqc, role_sqc, access_type, rule_sqc_list
+    </sql>
+
+    <insert id="insert">
+        insert into t_user_role
+        set sqc           = #{sqc,jdbcType=BIGINT},
+            user_sqc      = #{userSqc,jdbcType=BIGINT},
+            role_sqc      = #{roleSqc,jdbcType=BIGINT},
+            access_type   = #{accessType,jdbcType=VARCHAR},
+            rule_sqc_list = #{ruleSqcList,jdbcType=VARCHAR}
+    </insert>
+
+    <update id="updateNonNullFieldsBySqc">
+        update t_user_role
+        <set>
+            <if test="userSqc != null">
+                user_sqc = #{userSqc,jdbcType=BIGINT},
+            </if>
+            <if test="roleSqc != null">
+                role_sqc = #{roleSqc,jdbcType=BIGINT},
+            </if>
+            <if test="accessType != null">
+                access_type = #{accessType,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleSqcList != null">
+                rule_sqc_list = #{ruleSqcList,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </update>
+
+    <select id="sqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_user_role
+        WHERE sqc = #{sqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <select id="queryRoleOfUser" resultMap="tUserRoleRm">
+        select
+        <include refid="allFields"/>
+        from t_user_role
+        where user_sqc = #{userSqc,jdbcType=BIGINT}
+        <if test="accessType != null">
+            and access_type = #{accessType,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <delete id="deleteBySqc">
+        delete
+        from t_user_role
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </delete>
+
+    <select id="queryUserOnRole" resultMap="cn.addenda.piparbac.mapper.UserMapper.tUserRm">
+        select user.sqc        as sqc,
+               user.user_id    as user_id,
+               user.user_name  as user_name,
+               user.user_email as user_email,
+               user.status     as status
+        from t_user_role ur
+                 join t_user user on ur.user_sqc = user.sqc
+        where ur.role_sqc = #{roleSqc,jdbcType=BIGINT}
+    </select>
+
+    <select id="queryByNonNullFields" resultMap="tUserRoleRm">
+        select
+        <include refid="allFields"/>
+        from t_user_role
+        <where>
+            <if test="sqc != null">
+                and sqc = #{sqc,jdbcType=BIGINT}
+            </if>
+            <if test="userSqc != null">
+                and user_sqc = #{userSqc,jdbcType=BIGINT}
+            </if>
+            <if test="roleSqc != null">
+                and role_sqc = #{roleSqc,jdbcType=BIGINT}
+            </if>
+            <if test="accessType != null">
+                and access_type = #{accessType,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleSqcList != null">
+                and rule_sqc_list like concat('%', #{ruleSqcList,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByUserSqc">
+        delete
+        from t_user_role
+        where user_sqc = #{userSqc,jdbcType=BIGINT}
+    </delete>
+
+    <select id="roleSqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_user_role
+        WHERE role_sqc = #{roleSqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <select id="ruleSqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_user_role
+        WHERE role_sqc like concat('%', #{ruleSqc,jdbcType=BIGINT}, '%')
+        limit 1
+    </select>
+</mapper>

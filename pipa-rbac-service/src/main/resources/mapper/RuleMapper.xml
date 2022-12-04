@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.RuleMapper">
+    <resultMap id="tRuleRm" type="cn.addenda.piparbac.po.Rule">
+        <id property="sqc" column="sqc"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, rule_code, rule_name, table_name, `condition`, status
+    </sql>
+
+    <insert id="insert">
+        insert into t_rule
+        set sqc         = #{sqc,jdbcType=BIGINT},
+            rule_code   = #{ruleCode,jdbcType=VARCHAR},
+            rule_name   = #{ruleName,jdbcType=VARCHAR},
+            table_name  = #{tableName,jdbcType=VARCHAR},
+            `condition` = #{condition,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=VARCHAR}
+    </insert>
+
+    <select id="ruleCodeExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_rule
+        WHERE rule_code = #{ruleCode,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="sqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_rule
+        WHERE sqc = #{sqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <delete id="deleteBySqc">
+        delete
+        from t_rule
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateNonNullFieldsBySqc">
+        update t_rule
+        <set>
+            <if test="ruleCode != null">
+                rule_code = #{ruleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleName != null">
+                rule_name = #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="tableName != null">
+                table_name = #{tableName,jdbcType=VARCHAR},
+            </if>
+            <if test="condition != null">
+                `condition` = #{condition,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </update>
+
+    <select id="queryByNonNullFields" resultMap="tRuleRm">
+        select
+        <include refid="allFields"/>
+        from t_rule
+        <where>
+            <if test="sqc != null">
+                and sqc = #{sqc,jdbcType=BIGINT}
+            </if>
+            <if test="ruleCode != null">
+                and rule_code = #{ruleCode,jdbcType=VARCHAR}
+            </if>
+            <if test="ruleName != null">
+                and rule_name like concat('%', #{ruleName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="tableName != null">
+                and table_name like concat('%', #{tableName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="condition != null">
+                and `condition` like concat('%', #{condition,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByRuleCode" resultMap="tRuleRm">
+        select
+        <include refid="allFields"/>
+        from t_rule
+        where rule_code = #{ruleCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

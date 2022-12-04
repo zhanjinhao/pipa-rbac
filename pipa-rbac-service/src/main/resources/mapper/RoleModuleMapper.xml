@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.RoleModuleMapper">
+    <resultMap id="tUserRoleRm" type="cn.addenda.piparbac.po.RoleModule">
+        <id property="sqc" column="sqc"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, role_sqc, module_sqc
+    </sql>
+
+    <select id="queryModuleOfRole" resultMap="tUserRoleRm">
+        select
+        <include refid="allFields"/>
+        from t_role_module
+        where role_sqc = #{roleSqc,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert">
+        insert into t_role_module
+        set sqc        = #{sqc,jdbcType=BIGINT},
+            role_sqc   = #{roleSqc,jdbcType=BIGINT},
+            module_sqc = #{moduleSqc,jdbcType=BIGINT}
+    </insert>
+
+    <delete id="deleteBySqc">
+        delete
+        from t_role_module
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </delete>
+
+    <select id="queryRoleOnModule" resultMap="cn.addenda.piparbac.mapper.RoleMapper.tRoleRm">
+        select role.sqc       as sqc,
+               role.role_code as role_code,
+               role.role_name as role_name,
+               role.status    as status
+        from t_role role
+                 join t_role_module rm on role.sqc = rm.role_sqc
+        where rm.module_sqc = #{moduleSqc,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByRoleSqc">
+        delete
+        from t_role_module
+        where role_sqc = #{roleSqc,jdbcType=BIGINT}
+    </delete>
+
+    <select id="moduleSqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_role_module
+        WHERE module_sqc = #{moduleSqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+</mapper>

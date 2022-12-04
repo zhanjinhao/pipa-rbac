@@ -1,0 +1,84 @@
+server:
+  port: 21881
+  servlet:
+    context-path: /piparbac
+
+logging:
+  config: classpath:logback-spring.xml
+
+spring:
+  profiles:
+    include:
+      jdbc,nacos,redis
+  application:
+    name: piparbac-service
+  datasource:
+    url: ${jdbc.url}
+    username: ${jdbc.username}
+    password: ${jdbc.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: HikariCP
+      auto-commit: false
+      transaction-isolation: 2
+      # 最小空闲连接数
+      minimum-idle: 1
+      # 连接池最大连接数
+      maximum-pool-size: 3
+      # 空闲连接存活最大时间(ms)，配置为10分钟
+      idle-timeout: 600000
+      # 此属性控制池中连接的最长生命周期(ms)，配置为30分钟
+      max-lifetime: 1800000
+      # 数据库连接超时时间(ms)，配置为1秒
+      connection-timeout: 1000
+      # 连接测试 query
+      connection-test-query: select 1
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    password: ${redis.password}
+    lettuce:
+      pool:
+        max-active: 4
+        max-idle: 1
+        min-idle: 1
+        max-wait: 1000ms
+    database: 0
+
+nacos:
+  config:
+    serverAddr: ${nacos.server.addr}:${nacos.server.port}
+    namespace: ${nacos.namespace}
+    username: ${nacos.username}
+    password: ${nacos.password}
+    group: piparbac
+
+dubbo:
+  scan:
+    # dubbo 服务扫描基准包
+    base-packages: cn.addenda.piparbac.rpc
+  protocol:
+    # dubbo 协议
+    name: dubbo
+    # dubbo 协议端口
+    port: 20881
+  registry:
+    address: nacos://${nacos.server.addr}:${nacos.server.port}
+    username: ${nacos.username}
+    password: ${nacos.password}
+    parameters[namespace]: ${nacos.namespace}
+    group: dev
+  application:
+    qos-enable: false #dubbo运维服务是否开启
+    logger: slf4j
+    name: piparbac-service
+  consumer:
+    check: false  #启动时就否检查依赖的服务
+    threads: 1
+  provider:
+    threads: 1
+
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+

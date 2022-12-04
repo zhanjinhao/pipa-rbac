@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.addenda</groupId>
+    <artifactId>pipa-rbac</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>pipa-rbac-api</module>
+        <module>pipa-rbac-service</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>cn.addenda</groupId>
+        <artifactId>common-parent</artifactId>
+        <version>springboot-dubbo</version>
+    </parent>
+
+    <properties>
+        <business-easy.version>2.0.0</business-easy.version>
+        <mybatis-easy.version>1.1.1-SNAPSHOT</mybatis-easy.version>
+        <spring-easy.version>1.0.0</spring-easy.version>
+        <aha-cdc.version>1.0-SNAPSHOT</aha-cdc.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!--business、mybatis、spring、cdc-->
+            <dependency>
+                <groupId>cn.addenda</groupId>
+                <artifactId>business-easy</artifactId>
+                <version>${business-easy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.addenda</groupId>
+                <artifactId>mybatis-easy</artifactId>
+                <version>${mybatis-easy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.addenda</groupId>
+                <artifactId>spring-easy</artifactId>
+                <version>${spring-easy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.addenda</groupId>
+                <artifactId>aha-cdc</artifactId>
+                <version>${aha-cdc.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

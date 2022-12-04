@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.UserMapper">
+    <resultMap id="tUserRm" type="cn.addenda.piparbac.po.User">
+        <id property="sqc" column="SQC"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, user_id, user_name, user_email, status
+    </sql>
+
+    <insert id="insert">
+        insert into t_user
+        set sqc        = #{sqc,jdbcType=BIGINT},
+            user_id    = #{userId,jdbcType=VARCHAR},
+            user_name  = #{userName,jdbcType=VARCHAR},
+            user_email = #{userEmail,jdbcType=VARCHAR},
+            status     = #{status,jdbcType=VARCHAR}
+    </insert>
+
+    <select id="userIdExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_user
+        WHERE user_id = #{userId,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="userEmailExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_user
+        WHERE user_email = #{userEmail,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="sqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_user
+        WHERE sqc = #{sqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <delete id="deleteBySqc">
+        delete
+        from t_user
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </delete>
+
+    <select id="queryByUserId" resultMap="tUserRm">
+        select
+        <include refid="allFields"/>
+        from t_user
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryByNonNullFields" resultMap="tUserRm">
+        select
+        <include refid="allFields"/>
+        from t_user
+        <where>
+            <if test="sqc != null">
+                and sqc = #{sqc,jdbcType=BIGINT}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null">
+                and user_name like concat('%', #{userName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="userEmail != null">
+                and user_email = #{userEmail,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateNonNullFieldsBySqc">
+        update t_user
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userEmail != null">
+                user_email = #{userEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </update>
+</mapper>

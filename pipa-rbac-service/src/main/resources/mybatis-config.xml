@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- 开启自动驼峰映射缓存 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="localCacheScope" value="STATEMENT"/>
+    </settings>
+
+    <typeHandlers>
+        <typeHandler handler="cn.addenda.me.typehandler.TsLocalDateTimeHandler"
+                     javaType="java.time.LocalDateTime"/>
+    </typeHandlers>
+
+    <!--MyBaits插件是环绕拦截。靠前的拦截器后进入，先退出-->
+    <plugins>
+        <!--锁定读，pageHelper使用的JSqlParser库不支持lock in share mode语法，所以需要放在分页之后执行-->
+        <plugin interceptor="cn.addenda.me.lockedselect.interceptor.LockedSelectInterceptor"/>
+        <!--分页-->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>
+        <!--给SQL增加动态条件，这个需要在基础字段填充之后执行，因为逻辑删除不支持select * 语法-->
+        <plugin interceptor="cn.addenda.me.constraint.interceptor.ConstraintInterceptor">
+            <property name="functionEvaluator"
+                      value="cn.addenda.ro.grammar.function.evaluator.DefaultFunctionEvaluator"/>
+        </plugin>
+        <!--基础字段填充-->
+        <plugin interceptor="cn.addenda.me.fieldfilling.interceptor.FieldFillingInterceptor">
+            <property name="fieldFillingContext"
+                      value="cn.addenda.me.fieldfilling.DefaultFieldFillingContext"/>
+            <property name="functionEvaluator"
+                      value="cn.addenda.ro.grammar.function.evaluator.DefaultFunctionEvaluator"/>
+            <property name="tableNameSet"
+                      value="t_user,t_role,t_user_role,t_module,t_user_role_record,t_role_module,t_rule"/>
+        </plugin>
+        <!--物理删除转逻辑删除，这个需要在基础字段填充之前执行，因为delete语句转为update语句之后也需要补充基础字段-->
+        <plugin interceptor="cn.addenda.me.logicaldeletion.interceptor.LogicalDeletionInterceptor">
+            <property name="functionEvaluator"
+                      value="cn.addenda.ro.grammar.function.evaluator.DefaultFunctionEvaluator"/>
+            <property name="tableNameSet"
+                      value="t_user,t_role,t_user_role,t_module,t_user_role_record,t_role_module,t_rule"/>
+        </plugin>
+        <!--主键填充，作用于insert语句-->
+        <plugin interceptor="cn.addenda.me.idfilling.interceptor.IdFillingInterceptor">
+            <property name="idGenerator"
+                      value="cn.addenda.me.idfilling.idgenerator.NanoTimeIdGenerator"/>
+        </plugin>
+    </plugins>
+
+</configuration>

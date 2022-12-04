@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.addenda.piparbac.mapper.ModuleMapper">
+    <resultMap id="tModuleRm" type="cn.addenda.piparbac.po.Module">
+        <id property="sqc" column="sqc"/>
+    </resultMap>
+
+    <sql id="allFields">
+        sqc, module_code, module_name, access_type, show_type, response_to_type, parent_sqc, action, status
+    </sql>
+
+    <insert id="insert">
+        insert into t_module
+        set sqc              = #{sqc,jdbcType=BIGINT},
+            module_code      = #{moduleCode,jdbcType=VARCHAR},
+            module_name      = #{moduleName,jdbcType=VARCHAR},
+            access_type      = #{accessType,jdbcType=VARCHAR},
+            show_type        = #{showType,jdbcType=VARCHAR},
+            response_to_type = #{responseToType,jdbcType=VARCHAR},
+            parent_sqc       = #{parentSqc,jdbcType=BIGINT},
+            action           = #{accessType,jdbcType=VARCHAR},
+            status           = #{status,jdbcType=VARCHAR}
+    </insert>
+
+    <select id="moduleCodeExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_module
+        WHERE module_code = #{moduleCode,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="sqcExists" resultType="java.lang.Integer">
+        SELECT 1
+        FROM t_module
+        WHERE sqc = #{sqc,jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <delete id="deleteBySqc">
+        delete
+        from t_module
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateNonNullFieldsBySqc">
+        update t_module
+        <set>
+            <if test="moduleCode != null">
+                module_code = #{moduleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="moduleName != null">
+                module_name = #{moduleName,jdbcType=VARCHAR},
+            </if>
+            <if test="accessType != null">
+                access_type = #{accessType,jdbcType=VARCHAR},
+            </if>
+            <if test="showType != null">
+                show_type = #{showType,jdbcType=VARCHAR},
+            </if>
+            <if test="responseToType != null">
+                response_to_type = #{responseToType,jdbcType=VARCHAR},
+            </if>
+            <if test="parentSqc != null">
+                parent_sqc = #{parentSqc,jdbcType=BIGINT},
+            </if>
+            <if test="action != null">
+                action = #{action,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sqc = #{sqc,jdbcType=BIGINT}
+    </update>
+
+    <select id="queryByModuleCode" resultMap="tModuleRm">
+        select
+        <include refid="allFields"/>
+        from t_module
+        where module_code = #{moduleCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryByNonNullFields" resultMap="tModuleRm">
+        select
+        <include refid="allFields"/>
+        from t_module
+        <where>
+            <if test="sqc != null">
+                and sqc = #{sqc,jdbcType=BIGINT}
+            </if>
+            <if test="moduleCode != null">
+                and module_code = #{moduleCode,jdbcType=VARCHAR}
+            </if>
+            <if test="moduleName != null">
+                and module_name like concat('%', #{moduleName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="accessType != null">
+                and access_type = #{accessType,jdbcType=VARCHAR}
+            </if>
+            <if test="showType != null">
+                and show_type = #{showType,jdbcType=VARCHAR}
+            </if>
+            <if test="responseToType != null">
+                and response_to_type = #{responseToType,jdbcType=VARCHAR}
+            </if>
+            <if test="parentSqc != null">
+                and parent_sqc = #{parentSqc,jdbcType=BIGINT}
+            </if>
+            <if test="action != null">
+                and action = #{action,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>
