@@ -1,0 +1,7 @@
+nacos:
+  server:
+    addr:
+    port:
+  namespace:
+  username:
+  password:
