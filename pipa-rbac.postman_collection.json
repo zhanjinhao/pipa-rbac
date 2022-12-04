@@ -1,0 +1,1274 @@
+{
+	"info": {
+		"_postman_id": "ed255713-0514-415e-97c5-91663ca6d5a8",
+		"name": "pipa-rbac",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "USER-插入",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"126\",\r\n    \"userName\": \"addenda\",\r\n    \"userEmail\": \"126@163.com\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/user/insert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"user",
+						"insert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER-分页查询",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/user/pageQuery?pageNum=1&pageSize=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"user",
+						"pageQuery"
+					],
+					"query": [
+						{
+							"key": "pageNum",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER-根据SQC查询",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/user/queryBySqc?sqc=1270165421254000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"user",
+						"queryBySqc"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "1270165421254000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER-修改",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sqc\": \"1111768361849100\",\r\n    \"userName\": \"addenda1\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/user/update?sqc=1270165421254000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"user",
+						"update"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "1270165421254000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER-设置状态",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "L"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/user/setStatus?sqc=1270165421254000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"user",
+						"setStatus"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "1270165421254000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER-删除",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "1111768361849100"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/user/deleteBySqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"user",
+						"deleteBySqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ROLE-插入",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roleCode\": \"qingbao\",\r\n    \"roleName\": \"情报\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/role/insert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"role",
+						"insert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ROLE-删除",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "139377581960400"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/role/deleteBySqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"role",
+						"deleteBySqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ROLE-修改",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sqc\": 139377581960400,\r\n    \"roleName\": \"签派\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/role/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"role",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ROLE-设置状态",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "A"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/role/setStatus?sqc=139377581960400",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"role",
+						"setStatus"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "139377581960400"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ROLE-根据SQC查询",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "D"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/role/queryBySqc?sqc=139377581960400",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"role",
+						"queryBySqc"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "139377581960400"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ROLE-分页查询",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/role/pageQuery?pageNum=2&pageSize=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"role",
+						"pageQuery"
+					],
+					"query": [
+						{
+							"key": "pageNum",
+							"value": "2"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-根节点SQC",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/rootSqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"rootSqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-插入",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"moduleCode\": \"hangbantiaozheng\",\r\n  \"moduleName\": \"航班调整\",\r\n  \"parentSqc\": 0,\r\n  \"action\": \"/hangbantiaozheng\",\r\n  \"accessType\": \"R\",\r\n  \"showType\": \"N\",\r\n  \"responseToType\": \"C\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/insert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"insert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-删除",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "300308488740200"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/deleteBySqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"deleteBySqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-修改",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sqc\": 300308488740200,\r\n  \"moduleName\": \"航班调整\",\r\n  \"action\": \"/hangbantiaozheng\",\r\n  \"accessType\": \"R\",\r\n  \"showType\": \"N\",\r\n  \"responseToType\": \"C\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-设置状态",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "A"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/setStatus?sqc=300308488740200",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"setStatus"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "300308488740200"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-根据SQC查询",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/queryBySqc?sqc=300308488740200",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"queryBySqc"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "300308488740200"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MODULE-分页查询",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"moduleName\": \"航\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/module/pageQuery?pageNum=1&pageSize=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"module",
+						"pageQuery"
+					],
+					"query": [
+						{
+							"key": "pageNum",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UR-保存用户的角色",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[1602307569577900]"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRole/save?userSqc=1270165421254000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRole",
+						"save"
+					],
+					"query": [
+						{
+							"key": "userSqc",
+							"value": "1270165421254000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UR-设置权限",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accessType\": \"W\",\r\n    \"ruleSqcList\": \"1603203888903300\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRole/setPermission?sqc=1603390031534800",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRole",
+						"setPermission"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "1603390031534800"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UR-查询用户的角色",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRole/queryRoleOfUser?userSqc=497925032261700",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRole",
+						"queryRoleOfUser"
+					],
+					"query": [
+						{
+							"key": "userSqc",
+							"value": "497925032261700"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UR-查询角色下的用户",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRole/queryUserOnRole?roleSqc=139377581960400",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRole",
+						"queryUserOnRole"
+					],
+					"query": [
+						{
+							"key": "roleSqc",
+							"value": "139377581960400"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "URR-登录",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userSqc\": 1270165421254000,\r\n    \"roleSqc\": 1602307569577900\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRoleRecord/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRoleRecord",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "URR-退出",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userSqc\": 497925032261700,\r\n    \"roleSqc\": 498018410984700\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRoleRecord/exit?userSqc=497925032261700",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRoleRecord",
+						"exit"
+					],
+					"query": [
+						{
+							"key": "userSqc",
+							"value": "497925032261700"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "URR-查询登录角色",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userSqc\": 497925032261700,\r\n    \"roleSqc\": 498018410984700\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/userRoleRecord/queryLoginRole?userSqc=497925032261700",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"userRoleRecord",
+						"queryLoginRole"
+					],
+					"query": [
+						{
+							"key": "userSqc",
+							"value": "497925032261700"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RM-查询角色的模块",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/roleModule/queryModuleOfRole?roleSqc=1602307569577900&accessType=R",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"roleModule",
+						"queryModuleOfRole"
+					],
+					"query": [
+						{
+							"key": "roleSqc",
+							"value": "1602307569577900"
+						},
+						{
+							"key": "accessType",
+							"value": "R"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RM-保存角色的模块",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[0, 300308488740200]"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/roleModule/save?roleSqc=498033223833800",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"roleModule",
+						"save"
+					],
+					"query": [
+						{
+							"key": "roleSqc",
+							"value": "498033223833800"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RM-查询模块下的角色",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[0, 300308488740200]"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/roleModule/queryRoleOnModule?moduleSqc=10004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"roleModule",
+						"queryRoleOnModule"
+					],
+					"query": [
+						{
+							"key": "moduleSqc",
+							"value": "10004"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-插入",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ruleCode\": \"wanggui_flight\",\r\n    \"ruleName\": \"网规航班\",\r\n    \"tableName\": \"t_flight\",\r\n    \"condition\": \"creator = 'addenda'\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/insert",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"insert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-删除",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "473821544279100"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/deleteBySqc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"deleteBySqc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-修改",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sqc\": \"473821544279100\",\r\n    \"ruleName\": \"网规航班\",\r\n    \"tableName\": \"t_flight\",\r\n    \"condition\": \"owner = '网规'\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-设置状态",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "A"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/setStatus?sqc=473821544279100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"setStatus"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "473821544279100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-根据SQC查询",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/queryBySqc?sqc=473821544279100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"queryBySqc"
+					],
+					"query": [
+						{
+							"key": "sqc",
+							"value": "473821544279100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-分页查询",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/pageQuery?pageNum=1&pageSize=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"pageQuery"
+					],
+					"query": [
+						{
+							"key": "pageNum",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RULE-查询规则下的用户角色",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:21881/piparbac/rule/queryUserRoleOnRule?ruleSqc=473821544279100",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "21881",
+					"path": [
+						"piparbac",
+						"rule",
+						"queryUserRoleOnRule"
+					],
+					"query": [
+						{
+							"key": "ruleSqc",
+							"value": "473821544279100"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
