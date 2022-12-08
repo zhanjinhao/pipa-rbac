@@ -1,6 +1,7 @@
 package cn.addenda.piparbac.config;
 
 import cn.addenda.businesseasy.lock.LockService;
+import cn.addenda.businesseasy.lock.RedissonLockService;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
