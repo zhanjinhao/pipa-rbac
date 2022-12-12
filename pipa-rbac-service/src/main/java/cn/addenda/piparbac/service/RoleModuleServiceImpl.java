@@ -2,7 +2,6 @@ package cn.addenda.piparbac.service;
 
 import cn.addenda.businesseasy.asynctask.TernaryResult;
 import cn.addenda.businesseasy.util.BEListUtils;
-import cn.addenda.me.lockedselect.LockedSelectHelper;
 import cn.addenda.piparbac.bo.BModuleTree;
 import cn.addenda.piparbac.manager.ModuleManager;
 import cn.addenda.piparbac.manager.RoleManager;
@@ -10,6 +9,7 @@ import cn.addenda.piparbac.manager.RoleModuleManager;
 import cn.addenda.piparbac.po.Module;
 import cn.addenda.piparbac.po.Role;
 import cn.addenda.piparbac.po.RoleModule;
+import cn.addenda.se.lock.LockUtils;
 import cn.addenda.se.result.ServiceException;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
@@ -46,32 +46,40 @@ public class RoleModuleServiceImpl implements RoleModuleService {
             throw new ServiceException("roleSqc不存在：" + roleSqc + "。");
         }
 
-        TransactionAttribute rrAttribute = TransactionAttributeBuilder.newRRBuilder().build();
-        return TransactionUtils.doTransaction(rrAttribute, () -> {
-            // 从数据库查出来角色已经有的模块
-            List<RoleModule> roleModuleListFromDb = LockedSelectHelper.select(
-                    LockedSelectHelper.W_LOCK, () -> roleModuleManager.queryModuleOfRole(roleSqc));
+        return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "role:roleSqc", () -> {
+            TransactionAttribute rrAttribute = TransactionAttributeBuilder.newRRBuilder().build();
+            return TransactionUtils.doTransaction(rrAttribute, () -> {
+                // 从数据库查出来角色已经有的模块
+                List<RoleModule> roleModuleListFromDb = roleModuleManager.queryModuleOfRole(roleSqc);
 
-            List<Long> moduleSqcListFromDb = roleModuleListFromDb.stream().map(RoleModule::getModuleSqc).collect(Collectors.toList());
-            TernaryResult<List<Long>, List<Long>, List<Long>> separate = BEListUtils.separate(moduleSqcListFromDb, moduleSqcList);
+                List<Long> moduleSqcListFromDb = roleModuleListFromDb
+                        .stream()
+                        .map(RoleModule::getModuleSqc)
+                        .collect(Collectors.toList());
+                TernaryResult<List<Long>, List<Long>, List<Long>> separate =
+                        BEListUtils.separate(moduleSqcListFromDb, moduleSqcList);
 
-            // 数据库有&参数没有，需要删除
-            List<Long> deleteList = new ArrayList<>();
-            for (Long moduleSqc : separate.getFirstResult()) {
-                Map<Long, Long> roleModuleMapFromDb = roleModuleListFromDb.stream()
-                        .collect(Collectors.toMap(RoleModule::getModuleSqc, RoleModule::getSqc));
-                deleteList.add(roleModuleMapFromDb.get(moduleSqc));
-            }
+                // 数据库有&参数没有，需要删除
+                List<Long> deleteList = new ArrayList<>();
+                for (Long moduleSqc : separate.getFirstResult()) {
+                    Map<Long, Long> roleModuleMapFromDb = roleModuleListFromDb
+                            .stream()
+                            .collect(Collectors.toMap(RoleModule::getModuleSqc, RoleModule::getSqc));
+                    deleteList.add(roleModuleMapFromDb.get(moduleSqc));
+                }
 
-            // 参数有&数据库没有，需要增加
-            List<RoleModule> insertList = separate.getThirdResult().stream()
-                    .map(item -> new RoleModule(roleSqc, item)).collect(Collectors.toList());
+                // 参数有&数据库没有，需要增加
+                List<RoleModule> insertList = separate.getThirdResult()
+                        .stream()
+                        .map(item -> new RoleModule(roleSqc, item))
+                        .collect(Collectors.toList());
 
-            roleModuleManager.batchDeleteBySqc(deleteList);
-            roleModuleManager.batchInsert(insertList);
+                roleModuleManager.batchDeleteBySqc(deleteList);
+                roleModuleManager.batchInsert(insertList);
 
-            return ServiceResult.success(true);
-        });
+                return ServiceResult.success(true);
+            });
+        }, roleSqc);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package cn.addenda.piparbac.service;
 
-import cn.addenda.me.lockedselect.LockedSelectHelper;
 import cn.addenda.piparbac.manager.RoleManager;
 import cn.addenda.piparbac.manager.RoleModuleManager;
 import cn.addenda.piparbac.manager.UserRoleManager;
 import cn.addenda.piparbac.po.Role;
 import cn.addenda.piparbac.utils.StatusUtils;
+import cn.addenda.se.lock.LockUtils;
 import cn.addenda.se.result.ServiceException;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
@@ -14,7 +14,6 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,17 +35,18 @@ public class RoleServiceImpl implements RoleService {
     private RoleModuleManager roleModuleManager;
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @ServiceResultConvertible
     public ServiceResult<Long> insert(Role role) {
-        if (Boolean.TRUE.equals(LockedSelectHelper.select(
-                LockedSelectHelper.W_LOCK, () -> roleManager.roleCodeExists(role.getRoleCode())))) {
-            throw new ServiceException("roleCode已存在：" + role.getRoleCode() + "。 ");
-        }
+        return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "role:roleCode", () -> {
+            if (roleManager.roleCodeExists(role.getRoleCode())) {
+                throw new ServiceException("roleCode已存在：" + role.getRoleCode() + "。 ");
+            }
 
-        role.setStatus(StatusUtils.ACTIVE);
-        roleManager.insert(role);
-        return ServiceResult.success(role.getSqc());
+            role.setStatus(StatusUtils.ACTIVE);
+            roleManager.insert(role);
+            return ServiceResult.success(role.getSqc());
+        }, role.getRoleCode());
     }
 
     @Override

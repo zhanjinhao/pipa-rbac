@@ -1,10 +1,10 @@
 package cn.addenda.piparbac.service;
 
-import cn.addenda.me.lockedselect.LockedSelectHelper;
 import cn.addenda.piparbac.manager.ModuleManager;
 import cn.addenda.piparbac.manager.RoleModuleManager;
 import cn.addenda.piparbac.po.Module;
 import cn.addenda.piparbac.utils.StatusUtils;
+import cn.addenda.se.lock.LockUtils;
 import cn.addenda.se.result.ServiceException;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
@@ -13,7 +13,6 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -37,25 +36,27 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @ServiceResultConvertible
     public ServiceResult<Long> insert(Module module) {
         assertModule(module);
-        if (Boolean.TRUE.equals(LockedSelectHelper.select(
-                LockedSelectHelper.W_LOCK, () -> moduleManager.moduleCodeExists(module.getModuleCode())))) {
-            throw new ServiceException("moduleCode已存在：" + module.getModuleCode() + "。 ");
-        }
-        // 特殊处理根目录
-        if (moduleManager.rootParentSqc().equals(module.getParentSqc())) {
-            if (Boolean.TRUE.equals(LockedSelectHelper.select(
-                    LockedSelectHelper.W_LOCK, () -> moduleManager.sqcExists(0L)))) {
-                throw new ServiceException("根目录已存在！");
+        return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "module:moduleCode", () -> {
+            if (moduleManager.moduleCodeExists(module.getModuleCode())) {
+                throw new ServiceException("moduleCode已存在：" + module.getModuleCode() + "。");
             }
-            module.setSqc(0L);
-        }
-        module.setStatus(StatusUtils.ACTIVE);
-        moduleManager.insert(module);
-        return ServiceResult.success(module.getSqc());
+            return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "module:root", () -> {
+                // 特殊处理根目录
+                if (moduleManager.rootParentSqc().equals(module.getParentSqc())) {
+                    if (moduleManager.sqcExists(0L)) {
+                        throw new ServiceException("根目录已存在！");
+                    }
+                    module.setSqc(0L);
+                }
+                module.setStatus(StatusUtils.ACTIVE);
+                moduleManager.insert(module);
+                return ServiceResult.success(module.getSqc());
+            }, 0);
+        }, module.getModuleCode());
     }
 
     @Override

@@ -1,13 +1,13 @@
 package cn.addenda.piparbac.service;
 
 import cn.addenda.businesseasy.util.BEListUtils;
-import cn.addenda.me.lockedselect.LockedSelectHelper;
 import cn.addenda.piparbac.manager.RoleManager;
 import cn.addenda.piparbac.manager.UserManager;
 import cn.addenda.piparbac.manager.UserRoleManager;
 import cn.addenda.piparbac.manager.UserRoleRecordManager;
 import cn.addenda.piparbac.po.UserRole;
 import cn.addenda.piparbac.po.UserRoleRecord;
+import cn.addenda.se.lock.LockUtils;
 import cn.addenda.se.result.ServiceException;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
@@ -58,27 +58,29 @@ public class UserRoleRecordServiceImpl implements UserRoleRecordService {
             throw new ServiceException("用户 [" + userSqc + "] 无角色：[" + roleSqc + "]或无读写权限。");
         }
 
-        TransactionAttribute rrAttribute = TransactionAttributeBuilder.newRRBuilder().build();
-        return TransactionUtils.doTransaction(rrAttribute, () -> {
+        return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "user:userSqc", () -> {
 
-            // 查询出来用户现有的角色
-            UserRoleRecord userRoleRecordFromDb = LockedSelectHelper.select(
-                    LockedSelectHelper.W_LOCK, () -> userRoleRecordManager.queryUserRoleRecordByUserSqc(userSqc));
+            TransactionAttribute rrAttribute = TransactionAttributeBuilder.newRRBuilder().build();
+            return TransactionUtils.doTransaction(rrAttribute, () -> {
 
-            // 如果不存在，表示登录
-            if (userRoleRecordFromDb == null) {
-                userRoleRecord.setType(UserRoleRecord.TYPE_ENTER);
-                userRoleRecordManager.insert(userRoleRecord);
-            }
-            // 如果存在，表示转换角色
-            else {
-                userRoleRecordManager.deleteByUserSqc(userSqc);
-                userRoleRecord.setType(UserRoleRecord.TYPE_CHANGE_ROLE);
-                userRoleRecordManager.insert(userRoleRecord);
-            }
+                // 查询出来用户现有的角色
+                UserRoleRecord userRoleRecordFromDb = userRoleRecordManager.queryUserRoleRecordByUserSqc(userSqc);
 
-            return ServiceResult.success(userRoleRecord.getSqc());
-        });
+                // 如果不存在，表示登录
+                if (userRoleRecordFromDb == null) {
+                    userRoleRecord.setType(UserRoleRecord.TYPE_ENTER);
+                    userRoleRecordManager.insert(userRoleRecord);
+                }
+                // 如果存在，表示转换角色
+                else {
+                    userRoleRecordManager.deleteByUserSqc(userSqc);
+                    userRoleRecord.setType(UserRoleRecord.TYPE_CHANGE_ROLE);
+                    userRoleRecordManager.insert(userRoleRecord);
+                }
+
+                return ServiceResult.success(userRoleRecord.getSqc());
+            });
+        }, userSqc);
     }
 
     @Override

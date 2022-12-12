@@ -1,10 +1,10 @@
 package cn.addenda.piparbac.service;
 
-import cn.addenda.me.lockedselect.LockedSelectHelper;
 import cn.addenda.piparbac.manager.UserManager;
 import cn.addenda.piparbac.manager.UserRoleManager;
 import cn.addenda.piparbac.po.User;
 import cn.addenda.piparbac.utils.StatusUtils;
+import cn.addenda.se.lock.LockUtils;
 import cn.addenda.se.result.ServiceException;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
@@ -13,7 +13,6 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,20 +31,22 @@ public class UserServiceImpl implements UserService {
     private UserRoleManager userRoleManager;
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @ServiceResultConvertible
     public ServiceResult<Long> insert(User user) {
-        if (Boolean.TRUE.equals(LockedSelectHelper.select(
-                LockedSelectHelper.W_LOCK, () -> userManager.userIdExists(user.getUserId())))) {
-            throw new ServiceException("用户ID已存在：" + user.getUserId() + "。");
-        }
-        if (Boolean.TRUE.equals(LockedSelectHelper.select(
-                LockedSelectHelper.W_LOCK, () -> userManager.userEmailExists(user.getUserEmail())))) {
-            throw new ServiceException("邮箱已存在：" + user.getUserEmail() + "。");
-        }
-        user.setStatus(StatusUtils.ON_JOB);
-        userManager.insert(user);
-        return ServiceResult.success(user.getSqc());
+        return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "user:userId", () -> {
+            if (userManager.userIdExists(user.getUserId())) {
+                throw new ServiceException("用户ID已存在：" + user.getUserId() + "。");
+            }
+            return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "user:userEmail", () -> {
+                if (userManager.userEmailExists(user.getUserEmail())) {
+                    throw new ServiceException("邮箱已存在：" + user.getUserEmail() + "。");
+                }
+                user.setStatus(StatusUtils.ON_JOB);
+                userManager.insert(user);
+                return ServiceResult.success(user.getSqc());
+            }, user.getUserEmail());
+        }, user.getUserId());
     }
 
     @Override

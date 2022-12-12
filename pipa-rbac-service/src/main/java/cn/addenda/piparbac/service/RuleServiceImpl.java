@@ -1,6 +1,5 @@
 package cn.addenda.piparbac.service;
 
-import cn.addenda.me.lockedselect.LockedSelectHelper;
 import cn.addenda.piparbac.bo.BUserRoleWithBizFields;
 import cn.addenda.piparbac.manager.*;
 import cn.addenda.piparbac.po.Role;
@@ -8,6 +7,7 @@ import cn.addenda.piparbac.po.Rule;
 import cn.addenda.piparbac.po.User;
 import cn.addenda.piparbac.po.UserRole;
 import cn.addenda.piparbac.utils.StatusUtils;
+import cn.addenda.se.lock.LockUtils;
 import cn.addenda.se.result.ServiceException;
 import cn.addenda.se.result.ServiceResult;
 import cn.addenda.se.result.ServiceResultConvertible;
@@ -18,7 +18,6 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -50,17 +49,18 @@ public class RuleServiceImpl implements RuleService {
     private UserRoleRecordManager userRoleRecordManager;
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @ServiceResultConvertible
     public ServiceResult<Long> insert(Rule rule) {
-        if (Boolean.TRUE.equals(LockedSelectHelper.select(
-                LockedSelectHelper.W_LOCK, () -> ruleManager.ruleCodeExists(rule.getRuleCode())))) {
-            throw new ServiceException("ruleCode已存在：" + rule.getRuleCode() + "。");
-        }
+        return LockUtils.doLock(LockUtils.SYSTEM_BUSY, "rule:ruleCode", () -> {
+            if (ruleManager.ruleCodeExists(rule.getRuleCode())) {
+                throw new ServiceException("ruleCode已存在：" + rule.getRuleCode() + "。");
+            }
 
-        rule.setStatus(StatusUtils.ACTIVE);
-        ruleManager.insert(rule);
-        return ServiceResult.success(rule.getSqc());
+            rule.setStatus(StatusUtils.ACTIVE);
+            ruleManager.insert(rule);
+            return ServiceResult.success(rule.getSqc());
+        }, rule.getRuleCode());
     }
 
     @Override
